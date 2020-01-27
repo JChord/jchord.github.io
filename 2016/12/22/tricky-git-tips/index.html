@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://doslin.com').hostname,
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.7.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+  <meta name="description" content="前言 以下内容不牵涉 Git 的内部实现原理，阅读正文将花费您大约15分钟。 文中的所有 Git 命令省略了参数，完整调用请查阅官方文档。 本文基于一次组内分享的内容整理，希望对各位有所帮助。  作为开发者，使用 Git 作为项目的代码控制系统已经是必备技能了（当然，还有本文的MarkDown），而日常工作中的你是否只停留在无尽的 pull 与 push 中呢？ 下面就来介绍 Git 中的几种实用">
+<meta name="keywords" content="git">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Tricky Git Tips">
+<meta property="og:url" content="http://doslin.com/2016/12/22/tricky-git-tips/index.html">
+<meta property="og:site_name" content="DosLin&#39;s Blog">
+<meta property="og:description" content="前言 以下内容不牵涉 Git 的内部实现原理，阅读正文将花费您大约15分钟。 文中的所有 Git 命令省略了参数，完整调用请查阅官方文档。 本文基于一次组内分享的内容整理，希望对各位有所帮助。  作为开发者，使用 Git 作为项目的代码控制系统已经是必备技能了（当然，还有本文的MarkDown），而日常工作中的你是否只停留在无尽的 pull 与 push 中呢？ 下面就来介绍 Git 中的几种实用">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://doslin.com/images/2016/12/git01.png">
+<meta property="og:image" content="http://doslin.com/images/2016/12/git02.png">
+<meta property="og:image" content="http://doslin.com/images/2016/12/git03.png">
+<meta property="og:image" content="http://doslin.com/images/2016/12/git04.png">
+<meta property="og:image" content="http://doslin.com/images/2016/12/git05.png">
+<meta property="og:updated_time" content="2020-01-27T10:20:08.580Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Tricky Git Tips">
+<meta name="twitter:description" content="前言 以下内容不牵涉 Git 的内部实现原理，阅读正文将花费您大约15分钟。 文中的所有 Git 命令省略了参数，完整调用请查阅官方文档。 本文基于一次组内分享的内容整理，希望对各位有所帮助。  作为开发者，使用 Git 作为项目的代码控制系统已经是必备技能了（当然，还有本文的MarkDown），而日常工作中的你是否只停留在无尽的 pull 与 push 中呢？ 下面就来介绍 Git 中的几种实用">
+<meta name="twitter:image" content="http://doslin.com/images/2016/12/git01.png">
+
+<link rel="canonical" href="http://doslin.com/2016/12/22/tricky-git-tips/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>Tricky Git Tips | DosLin's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">DosLin's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">什么都略懂一点，生活更美好一些</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://doslin.com/2016/12/22/tricky-git-tips/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="DosLin">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="DosLin's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Tricky Git Tips
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2016-12-22 18:23:15" itemprop="dateCreated datePublished" datetime="2016-12-22T18:23:15+08:00">2016-12-22</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-01-27 18:20:08" itemprop="dateModified" datetime="2020-01-27T18:20:08+08:00">2020-01-27</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/git/" itemprop="url" rel="index">
+                    <span itemprop="name">git</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><ul>
+<li>以下内容不牵涉 Git 的内部实现原理，阅读正文将花费您大约15分钟。</li>
+<li>文中的所有 Git 命令省略了参数，完整调用请查阅官方文档。</li>
+<li>本文基于一次组内分享的内容整理，希望对各位有所帮助。</li>
+</ul>
+<p>作为开发者，使用 <a href="https://zh.wikipedia.org/wiki/Git" target="_blank" rel="noopener">Git</a> 作为项目的代码控制系统已经是必备技能了（当然，还有本文的<a href="https://zh.wikipedia.org/wiki/Markdown" target="_blank" rel="noopener">MarkDown</a>），而日常工作中的你是否只停留在无尽的 <code>pull</code> 与 <code>push</code> 中呢？</p>
+<p>下面就来介绍 Git 中的几种实用命令，相信会对你今后可能遇到的实际工作场景带来实质性的效率提升。</p>
+<p>介绍命令之前，首先我们先需要了解下 Git 中<strong>操作区域</strong>的概念。</p>
+<h2 id="操作区域"><a href="#操作区域" class="headerlink" title="操作区域"></a>操作区域</h2><p>Git 的操作区域和 <a href="https://zh.wikipedia.org/wiki/Vi" target="_blank" rel="noopener">vi</a> 中的缓冲区的概念很类似，不同的 Git 命令会在不同的操作区域中工作。</p>
+<p><img src="/images/2016/12/git01.png" alt="操作区域"></p>
+<p>如图所示，Git的 <code>add</code> 操作会将文件的修改记录保存在<strong>暂存区</strong>，之后进行的 <code>commit</code> 操作会将暂存区的修改内容全部提交到<strong>历史区</strong>，最后进行的 <code>push</code> 操作将会把本地的操作记录推送到<strong>远程仓库</strong>中去。<br>之所以此处远程库的背景色使用了暗色调，是因为推送到远程库的代码是需要你“负责”的，一旦发布即是历史的诞生，请对 <code>push</code> 的操作保持敬畏和责任感。同时这里也牵涉到 Git 中<strong>提交哲学</strong>的概念。</p>
+<a id="more"></a>
+
+<h2 id="提交哲学"><a href="#提交哲学" class="headerlink" title="提交哲学"></a>提交哲学</h2><p>我们可以根据每个提交的粒度大小，我们可以将 Git 中的提交方式划分为两种派别。</p>
+<ul>
+<li><strong>现实化提交</strong>：尽快提交每个修改，保证提交历史记录中记录了所有的变更细节。</li>
+<li><strong>理想化提交</strong>：清理不好的中间决策，每次提交保证合乎逻辑，改动具有完整性。</li>
+</ul>
+<p>这里没有最优的实践，我们可以在一个项目中同时存在两种提交风格，我们也可以在 <code>push</code> 到远程仓库之前，整理历史区中的提交记录，通过<strong>重新排序</strong>、<strong>合并</strong>、<strong>删除</strong>甚至<strong>添加</strong>新提交，使得原先的<strong>现实化提交</strong>转化为<strong>理想化提交</strong>，这完全取决于自己的喜好和项目策略。不过请记住，推送到远程库的提交是已发生的历史，是“不可变更”的。</p>
+<h2 id="拉取代码"><a href="#拉取代码" class="headerlink" title="拉取代码"></a>拉取代码</h2><p>既然 Git 的各个工作区域是逐级向上提交的，那我们如何获取各个工作操作区域的代码呢？<br>使用如下图中的三条命令即可。</p>
+<p><img src="/images/2016/12/git02.png" alt="拉取代码"></p>
+<h2 id="工作场景"><a href="#工作场景" class="headerlink" title="工作场景"></a>工作场景</h2><p>好了，通过上面我们了解了 Git 的操作区域和提交哲学，下面就介绍 Git 命令在实际工作场景中的运用。</p>
+<h3 id="对付强迫症"><a href="#对付强迫症" class="headerlink" title="对付强迫症"></a>对付强迫症</h3><p>控几不住我记几， 怕断电怕死机总想提交怎么办？</p>
+<blockquote>
+<p>git commit –amend</p>
+</blockquote>
+<p><code>git commit --amend</code>命令可以在我们 <code>push</code> 代码之前修改最后一次提交内容。</p>
+<p><img src="/images/2016/12/git03.png" alt="amend"></p>
+<p>如图所示，常规 <code>commit</code> 会在历史中产生两次提交记录，而 <code>amend</code> 会对最后一次提交内容进行覆盖。</p>
+<h3 id="对付组员"><a href="#对付组员" class="headerlink" title="对付组员"></a>对付组员</h3><p>现在组内有很多业务线，大家在不同分支上开发，开发到一半想基于某条分支最新的代码进行开发怎么办？</p>
+<blockquote>
+<p>git rebase</p>
+</blockquote>
+<p><code>rebase</code> 命令正是用来改变当前提交的基础而生的。</p>
+<p><img src="/images/2016/12/git04.png" alt="rebase"></p>
+<h3 id="对付产品经理"><a href="#对付产品经理" class="headerlink" title="对付产品经理"></a>对付产品经理</h3><p>产品总是改需求，开发节奏有点乱怎么办？</p>
+<blockquote>
+<p>git cherry-pick</p>
+</blockquote>
+<p><code>cherry-pick</code> 命令可以引入其它分支上特定的提交来应用到当前分支。</p>
+<p><img src="/images/2016/12/git05.png" alt="cherry-pick"></p>
+<p>如图我们可以摘取指定分支中的某个“需求”实现来应用到当前分支。另外一种场景是用该命令提取修复分支上提交的某个bug修复代码。</p>
+<h3 id="对付测试"><a href="#对付测试" class="headerlink" title="对付测试"></a>对付测试</h3><p>还在写代码，测试又来提bug了，改到一半的代码怎么办？</p>
+<blockquote>
+<p>git stash</p>
+</blockquote>
+<p>Git 通过 <code>stash</code> 命令可以暂存我们的改动文件，同时使用对应的 <code>pop</code> 可拿出历史的改动。值得注意的是暂存没有分支的概念，在当前分支暂存的文件可以在其它分支中取出。</p>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>说了这么多，不妨去练练手，下面是几个 Git 命令的在线练习网站。</p>
+<p>1.<a href="http://shortcutfoo.com/app/dojos/git" target="_blank" rel="noopener">Git dojo</a><br>2.<a href="https://try.github.io/levels/1/challenges/1" target="_blank" rel="noopener">Learn Git in 15min</a><br>3.<a href="http://learngitbranching.js.org/" target="_blank" rel="noopener">LearnGitBranching</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/git/" rel="tag"># git</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2016/10/08/embedded-react-native-in-app-android/" rel="prev" title="弹射起步：Android原生项目集成React Native模块">
+      <i class="fa fa-chevron-left"></i> 弹射起步：Android原生项目集成React Native模块
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/03/15/react-native-source-code-analysis/" rel="next" title="20分钟理解React Native For Android原理">
+      20分钟理解React Native For Android原理 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#操作区域"><span class="nav-number">2.</span> <span class="nav-text">操作区域</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#提交哲学"><span class="nav-number">3.</span> <span class="nav-text">提交哲学</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#拉取代码"><span class="nav-number">4.</span> <span class="nav-text">拉取代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#工作场景"><span class="nav-number">5.</span> <span class="nav-text">工作场景</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#对付强迫症"><span class="nav-number">5.1.</span> <span class="nav-text">对付强迫症</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#对付组员"><span class="nav-number">5.2.</span> <span class="nav-text">对付组员</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#对付产品经理"><span class="nav-number">5.3.</span> <span class="nav-text">对付产品经理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#对付测试"><span class="nav-number">5.4.</span> <span class="nav-text">对付测试</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他"><span class="nav-number">6.</span> <span class="nav-text">其他</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">DosLin</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/JChord" title="Github → https://github.com/JChord" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>Github</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:doslino@gmail.com" title="E-Mail → mailto:doslino@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">DosLin</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.7.0
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

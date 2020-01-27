@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://doslin.com').hostname,
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.7.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+  <meta name="description" content="说明和前提1、由于通过命令react-native init初始化的React Native（以下简称RN）项目结构与原生项目有区别，所以不能单纯直接在已有项目的根目录下运行该命令。 2、RN需要Android4.1或以上的环境，故集成RN的Android项目的minSdkVersion需设置为API16或以上。 3、本机安装NPM支持：新版的RN依赖都将发布在NPM（包管理工具，如同Maven">
+<meta name="keywords" content="react-native">
+<meta property="og:type" content="article">
+<meta property="og:title" content="弹射起步：Android原生项目集成React Native模块">
+<meta property="og:url" content="http://doslin.com/2016/10/08/embedded-react-native-in-app-android/index.html">
+<meta property="og:site_name" content="DosLin&#39;s Blog">
+<meta property="og:description" content="说明和前提1、由于通过命令react-native init初始化的React Native（以下简称RN）项目结构与原生项目有区别，所以不能单纯直接在已有项目的根目录下运行该命令。 2、RN需要Android4.1或以上的环境，故集成RN的Android项目的minSdkVersion需设置为API16或以上。 3、本机安装NPM支持：新版的RN依赖都将发布在NPM（包管理工具，如同Maven">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-01-27T10:20:08.580Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="弹射起步：Android原生项目集成React Native模块">
+<meta name="twitter:description" content="说明和前提1、由于通过命令react-native init初始化的React Native（以下简称RN）项目结构与原生项目有区别，所以不能单纯直接在已有项目的根目录下运行该命令。 2、RN需要Android4.1或以上的环境，故集成RN的Android项目的minSdkVersion需设置为API16或以上。 3、本机安装NPM支持：新版的RN依赖都将发布在NPM（包管理工具，如同Maven">
+
+<link rel="canonical" href="http://doslin.com/2016/10/08/embedded-react-native-in-app-android/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>弹射起步：Android原生项目集成React Native模块 | DosLin's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">DosLin's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">什么都略懂一点，生活更美好一些</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://doslin.com/2016/10/08/embedded-react-native-in-app-android/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="DosLin">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="DosLin's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          弹射起步：Android原生项目集成React Native模块
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2016-10-08 00:00:00" itemprop="dateCreated datePublished" datetime="2016-10-08T00:00:00+08:00">2016-10-08</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-01-27 18:20:08" itemprop="dateModified" datetime="2020-01-27T18:20:08+08:00">2020-01-27</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <hr>
+<h2 id="说明和前提"><a href="#说明和前提" class="headerlink" title="说明和前提"></a>说明和前提</h2><p>1、由于通过命令<code>react-native init</code>初始化的<strong>React Native</strong>（以下简称RN）项目结构与原生项目有区别，所以不能单纯直接在已有项目的根目录下运行该命令。</p>
+<p>2、RN需要Android4.1或以上的环境，故集成RN的Android项目的<code>minSdkVersion</code>需设置为<strong>API16</strong>或以上。</p>
+<p>3、本机安装NPM支持：<br>新版的RN依赖都将发布在<strong>NPM</strong>（包管理工具，如同Maven仓库）中，故需安装NPM。</p>
+<p>4、本文安装环境为<strong>MAC</strong>，Windows或Linux上的命令差异请参考<a href="http://facebook.github.io/react-native/docs/getting-started.html" target="_blank" rel="noopener">官方文档</a>。</p>
+<h2 id="集成步骤"><a href="#集成步骤" class="headerlink" title="集成步骤"></a>集成步骤</h2><h3 id="1-安装NPM"><a href="#1-安装NPM" class="headerlink" title="1. 安装NPM"></a>1. 安装NPM</h3><p>之后于同时需要NodeJS服务器，故只需安装NodeJS，NPM会随同安装。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">brew install node</span><br><span class="line">brew install watchman</span><br></pre></td></tr></table></figure>
+
+<a id="more"></a>
+
+<h3 id="2-添加NPM依赖"><a href="#2-添加NPM依赖" class="headerlink" title="2. 添加NPM依赖"></a>2. 添加NPM依赖</h3><p>进入Android项目根目录，新建文件<code>package.json</code>，内容如下：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"name"</span>: <span class="string">"react-native-module"</span>,</span><br><span class="line">  <span class="attr">"version"</span>: <span class="string">"0.0.1"</span>,</span><br><span class="line">  <span class="attr">"private"</span>: <span class="literal">true</span>,</span><br><span class="line">  <span class="attr">"scripts"</span>: &#123;</span><br><span class="line">    <span class="attr">"start"</span>: <span class="string">"node node_modules/react-native/local-cli/cli.js start"</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">"dependencies"</span>: &#123;</span><br><span class="line">    <span class="attr">"react"</span>: <span class="string">"15.3.2"</span>,</span><br><span class="line">    <span class="attr">"react-native"</span>: <span class="string">"0.34.1"</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>之后拉取NPM组件，在<code>package.json</code>同目录位置下运行</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install</span><br></pre></td></tr></table></figure>
+
+<p>完成后将出现<code>node_modules</code>文件夹。</p>
+<h3 id="3-添加页面文件"><a href="#3-添加页面文件" class="headerlink" title="3.添加页面文件"></a>3.添加页面文件</h3><p>在根目录下，新建文件<code>index.android.js</code>，内容如下：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> React, &#123; Component &#125; <span class="keyword">from</span> <span class="string">'react'</span>;</span><br><span class="line"><span class="keyword">import</span> &#123;</span><br><span class="line">  AppRegistry,</span><br><span class="line">  StyleSheet,</span><br><span class="line">  Text,</span><br><span class="line">  View</span><br><span class="line">&#125; <span class="keyword">from</span> <span class="string">'react-native'</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">RN_Demo</span> <span class="keyword">extends</span> <span class="title">Component</span> </span>&#123;</span><br><span class="line">  render() &#123;</span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">      &lt;View style=&#123;styles.container&#125;&gt;</span><br><span class="line">        &lt;Text style=&#123;styles.welcome&#125;&gt;</span><br><span class="line">          Welcome to React Native!</span><br><span class="line">        &lt;<span class="regexp">/Text&gt;</span></span><br><span class="line"><span class="regexp">        &lt;Text style=&#123;styles.instructions&#125;&gt;</span></span><br><span class="line"><span class="regexp">          To get started, edit index.android.js</span></span><br><span class="line"><span class="regexp">        &lt;/</span>Text&gt;</span><br><span class="line">        &lt;Text style=&#123;styles.instructions&#125;&gt;</span><br><span class="line">          Double tap R on your keyboard to reload,&#123;<span class="string">'\n'</span>&#125;</span><br><span class="line">          Shake or press menu button <span class="keyword">for</span> dev menu</span><br><span class="line">        &lt;<span class="regexp">/Text&gt;</span></span><br><span class="line"><span class="regexp">      &lt;/</span>View&gt;</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> styles = StyleSheet.create(&#123;</span><br><span class="line">  container: &#123;</span><br><span class="line">    flex: <span class="number">1</span>,</span><br><span class="line">    justifyContent: <span class="string">'center'</span>,</span><br><span class="line">    alignItems: <span class="string">'center'</span>,</span><br><span class="line">    backgroundColor: <span class="string">'#F5FCFF'</span>,</span><br><span class="line">  &#125;,</span><br><span class="line">  welcome: &#123;</span><br><span class="line">    fontSize: <span class="number">20</span>,</span><br><span class="line">    textAlign: <span class="string">'center'</span>,</span><br><span class="line">    margin: <span class="number">10</span>,</span><br><span class="line">  &#125;,</span><br><span class="line">  instructions: &#123;</span><br><span class="line">    textAlign: <span class="string">'center'</span>,</span><br><span class="line">    color: <span class="string">'#333333'</span>,</span><br><span class="line">    marginBottom: <span class="number">5</span>,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">AppRegistry.registerComponent(<span class="string">'RN_Demo'</span>, () =&gt; RN_Demo);</span><br></pre></td></tr></table></figure>
+
+<p>记住上面的组件名<strong>RN_Demo</strong>。</p>
+<h3 id="4-添加RN依赖"><a href="#4-添加RN依赖" class="headerlink" title="4.添加RN依赖"></a>4.添加RN依赖</h3><p>编辑<code>app</code>目录下的<code>build.gradle</code>，添加</p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">compile</span> <span class="string">'com.facebook.react:react-native:0.34.1'</span>  <span class="comment">// From node_modules</span></span><br></pre></td></tr></table></figure>
+
+<p>之所以此处不根据官方文档的配置（compile ‘com.facebook.react:react-native:+’），你会发现通过<strong>Gradle Sync</strong>进行同步后会报错，所以需要在项目下的<code>build.gradle</code>中添加</p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">allprojects</span> &#123;</span><br><span class="line">    <span class="keyword">repositories</span> &#123;</span><br><span class="line">        jcenter()</span><br><span class="line">        maven &#123;</span><br><span class="line">            <span class="comment">// All of React Native (JS, Android binaries) is installed from npm</span></span><br><span class="line">            url <span class="string">"$projectDir/../node_modules/react-native/android"</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>否则未写明版本的RN依赖可能是<strong>jcenter</strong>中的旧版本。</p>
+<h3 id="5-新建Activity与Application"><a href="#5-新建Activity与Application" class="headerlink" title="5.新建Activity与Application"></a>5.新建Activity与Application</h3><p>新建一个继承自<code>ReactActivity</code>的<code>activity</code>，内容如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> com.facebook.react.ReactActivity;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">ReactActivity</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> String <span class="title">getMainComponentName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"RN_Demo"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注意此处实现的<code>getMainComponentName</code>方法返回的字符串与<code>index.android.js</code>中注册的<code>Component</code>名的要一致。</p>
+<p>之后编辑自定义<code>Application</code>，实现<code>ReactApplication</code>接口，内容如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainApplication</span> <span class="keyword">extends</span> <span class="title">Application</span> <span class="keyword">implements</span> <span class="title">ReactApplication</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> ReactNativeHost mReactNativeHost = <span class="keyword">new</span> ReactNativeHost(<span class="keyword">this</span>) &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="comment">// 表示是否启用开发者模式</span></span><br><span class="line">        <span class="function"><span class="keyword">protected</span> <span class="keyword">boolean</span> <span class="title">getUseDeveloperSupport</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> BuildConfig.DEBUG;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="comment">// 模块列表，可添加原生Java模块</span></span><br><span class="line">        <span class="function"><span class="keyword">protected</span> List&lt;ReactPackage&gt; <span class="title">getPackages</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> Arrays.&lt;ReactPackage&gt;asList(</span><br><span class="line">                    <span class="keyword">new</span> MainReactPackage()</span><br><span class="line">            );</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> ReactNativeHost <span class="title">getReactNativeHost</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> mReactNativeHost;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="6-编辑AndroidManifest-xml"><a href="#6-编辑AndroidManifest-xml" class="headerlink" title="6.编辑AndroidManifest.xml"></a>6.编辑<code>AndroidManifest.xml</code></h3><p>添加应用的网络访问权限，以及刚刚新建的<code>Activity</code>及<code>Application</code>：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">manifest</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">package</span>=<span class="string">"com.doslin.rndemo"</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">uses-permission</span> <span class="attr">android:name</span>=<span class="string">"android.permission.INTERNET"</span> /&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">application</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:name</span>=<span class="string">".MainApplication"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:allowBackup</span>=<span class="string">"true"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:icon</span>=<span class="string">"@mipmap/ic_launcher"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:label</span>=<span class="string">"@string/app_name"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:supportsRtl</span>=<span class="string">"false"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:theme</span>=<span class="string">"@style/AppTheme"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">activity</span> <span class="attr">android:name</span>=<span class="string">".MainActivity"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">intent-filter</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">action</span> <span class="attr">android:name</span>=<span class="string">"android.intent.action.MAIN"</span> /&gt;</span></span><br><span class="line"></span><br><span class="line">                <span class="tag">&lt;<span class="name">category</span> <span class="attr">android:name</span>=<span class="string">"android.intent.category.LAUNCHER"</span> /&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">intent-filter</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">activity</span>&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="tag">&lt;<span class="name">activity</span> <span class="attr">android:name</span>=<span class="string">"com.facebook.react.devsupport.DevSettingsActivity"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">application</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">manifest</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="7-添加NDK支持"><a href="#7-添加NDK支持" class="headerlink" title="7.添加NDK支持"></a>7.添加NDK支持</h3><p>在<code>gradle.properties</code>中添加如下内容：</p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">android.useDeprecatedNdk=<span class="keyword">true</span></span><br></pre></td></tr></table></figure>
+
+<p>在<strong>app</strong>下的<code>build.gradle</code>中添加如下内容：</p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ndk &#123;</span><br><span class="line">    abiFilters <span class="string">'armeabi'</span>, <span class="string">'armeabi-v7a'</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果你的app需要在x86下运行，请额外进行配置<code>x86</code>。</p>
+<h3 id="8-启动Packager-Server"><a href="#8-启动Packager-Server" class="headerlink" title="8.启动Packager Server"></a>8.启动<strong>Packager Server</strong></h3><p>在<code>package.json</code>同级目录下运行</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">react-native start</span><br></pre></td></tr></table></figure>
+
+<p>之后为了防止出现<code>error “Could not get BatchedBridge, make sure your bundle is packaged properly” on start of app</code>的异常，先运行</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl &quot;http://localhost:8081/index.android.bundle?platform=android&quot; -o &quot;./app/src/main/assets/index.android.bundle&quot;</span><br></pre></td></tr></table></figure>
+
+<p>将在<strong>assets</strong>目录下下载一份<code>index.android.bundle</code>文件。</p>
+<p>如果你是用的手机而非模拟器测试，还需要运行如下命令设置反向代理：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">adb reverse tcp:8081 tcp:8081</span><br></pre></td></tr></table></figure>
+
+<p>最后执行<strong>AS</strong>的绿色<strong>RUN</strong>按钮等待<strong>apk</strong>上传并运行。<br>在主界面摇晃手机会出现调试界面，注意开启<strong>显示悬浮窗</strong>权限。</p>
+<hr>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><p>1.<a href="http://facebook.github.io/react-native/docs/native-components-android.html" target="_blank" rel="noopener">http://facebook.github.io/react-native/docs/native-components-android.html</a></p>
+<p>2.<a href="http://gold.xitu.io/entry/57a0d03ed342d300572e9ffc" target="_blank" rel="noopener">http://gold.xitu.io/entry/57a0d03ed342d300572e9ffc</a></p>
+<p>3.<a href="http://www.imbeta.cn/react-native-for-android-huan-jing-da-jian-ji-cai-keng.html" target="_blank" rel="noopener">http://www.imbeta.cn/react-native-for-android-huan-jing-da-jian-ji-cai-keng.html</a></p>
+<p>4.<a href="http://acgtofe.com/posts/2016/06/react-native-embedding-android" target="_blank" rel="noopener">http://acgtofe.com/posts/2016/06/react-native-embedding-android</a></p>
+<p>5.<a href="http://stackoverflow.com/questions/38870710/error-could-not-get-batchedbridge-make-sure-your-bundle-is-packaged-properly" target="_blank" rel="noopener">http://stackoverflow.com/questions/38870710/error-could-not-get-batchedbridge-make-sure-your-bundle-is-packaged-properly</a></p>
+<h2 id="相关资料"><a href="#相关资料" class="headerlink" title="相关资料"></a>相关资料</h2><p>1.<a href="https://github.com/reactnativecn/react-native-guide" target="_blank" rel="noopener">React-Native学习指南</a></p>
+<p>2.<a href="https://github.com/xujinyang/react-native-android-guide#react-native-android-guide" target="_blank" rel="noopener">react-native-android-guide</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/react-native/" rel="tag"># react-native</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2016/12/22/tricky-git-tips/" rel="next" title="Tricky Git Tips">
+      Tricky Git Tips <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#说明和前提"><span class="nav-number">1.</span> <span class="nav-text">说明和前提</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#集成步骤"><span class="nav-number">2.</span> <span class="nav-text">集成步骤</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-安装NPM"><span class="nav-number">2.1.</span> <span class="nav-text">1. 安装NPM</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-添加NPM依赖"><span class="nav-number">2.2.</span> <span class="nav-text">2. 添加NPM依赖</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-添加页面文件"><span class="nav-number">2.3.</span> <span class="nav-text">3.添加页面文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-添加RN依赖"><span class="nav-number">2.4.</span> <span class="nav-text">4.添加RN依赖</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-新建Activity与Application"><span class="nav-number">2.5.</span> <span class="nav-text">5.新建Activity与Application</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-编辑AndroidManifest-xml"><span class="nav-number">2.6.</span> <span class="nav-text">6.编辑AndroidManifest.xml</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-添加NDK支持"><span class="nav-number">2.7.</span> <span class="nav-text">7.添加NDK支持</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-启动Packager-Server"><span class="nav-number">2.8.</span> <span class="nav-text">8.启动Packager Server</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number">3.</span> <span class="nav-text">参考链接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#相关资料"><span class="nav-number">4.</span> <span class="nav-text">相关资料</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">DosLin</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/JChord" title="Github → https://github.com/JChord" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>Github</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:doslino@gmail.com" title="E-Mail → mailto:doslino@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">DosLin</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.7.0
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
