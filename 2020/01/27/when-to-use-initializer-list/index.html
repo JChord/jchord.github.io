@@ -46,18 +46,18 @@
   };
 </script>
 
-  <meta name="description" content="在 Dart 中有以下 4 种方式来初始化实例变量。  在实例变量声明时初始化  123class Point &amp;#123;	var x = 0, y = 0;&amp;#125;   使用构造函数初始化  1234class Point &amp;#123;	var x, y;    Point(this.x, this.y);&amp;#125;   通过初始化列表（initializer list）  1234cl">
+  <meta name="description" content="在 Dart 中有以下 4 种方式来初始化实例变量。  在实例变量声明时初始化  123class Point &amp;#123;    var x = 0, y = 0;&amp;#125;   使用构造函数初始化  1234class Point &amp;#123;    var x, y;    Point(this.x, this.y);&amp;#125;   通过初始化列表（initializer list）">
 <meta name="keywords" content="initializer">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Dart 中该何时使用初始化列表">
 <meta property="og:url" content="http://doslin.com/2020/01/27/when-to-use-initializer-list/index.html">
 <meta property="og:site_name" content="DosLin&#39;s Blog">
-<meta property="og:description" content="在 Dart 中有以下 4 种方式来初始化实例变量。  在实例变量声明时初始化  123class Point &amp;#123;	var x = 0, y = 0;&amp;#125;   使用构造函数初始化  1234class Point &amp;#123;	var x, y;    Point(this.x, this.y);&amp;#125;   通过初始化列表（initializer list）  1234cl">
+<meta property="og:description" content="在 Dart 中有以下 4 种方式来初始化实例变量。  在实例变量声明时初始化  123class Point &amp;#123;    var x = 0, y = 0;&amp;#125;   使用构造函数初始化  1234class Point &amp;#123;    var x, y;    Point(this.x, this.y);&amp;#125;   通过初始化列表（initializer list）">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-01-27T10:31:19.060Z">
+<meta property="og:updated_time" content="2020-01-27T10:34:26.114Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Dart 中该何时使用初始化列表">
-<meta name="twitter:description" content="在 Dart 中有以下 4 种方式来初始化实例变量。  在实例变量声明时初始化  123class Point &amp;#123;	var x = 0, y = 0;&amp;#125;   使用构造函数初始化  1234class Point &amp;#123;	var x, y;    Point(this.x, this.y);&amp;#125;   通过初始化列表（initializer list）  1234cl">
+<meta name="twitter:description" content="在 Dart 中有以下 4 种方式来初始化实例变量。  在实例变量声明时初始化  123class Point &amp;#123;    var x = 0, y = 0;&amp;#125;   使用构造函数初始化  1234class Point &amp;#123;    var x, y;    Point(this.x, this.y);&amp;#125;   通过初始化列表（initializer list）">
 
 <link rel="canonical" href="http://doslin.com/2020/01/27/when-to-use-initializer-list/">
 
@@ -195,7 +195,7 @@
               <span class="post-meta-item-text">Posted on</span>
               
 
-              <time title="Created: 2020-01-27 18:28:21 / Modified: 18:31:19" itemprop="dateCreated datePublished" datetime="2020-01-27T18:28:21+08:00">2020-01-27</time>
+              <time title="Created: 2020-01-27 18:28:21 / Modified: 18:34:26" itemprop="dateCreated datePublished" datetime="2020-01-27T18:28:21+08:00">2020-01-27</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -224,29 +224,29 @@
 <ol>
 <li>在实例变量声明时初始化</li>
 </ol>
-<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Point</span> </span>&#123;</span><br><span class="line">	<span class="keyword">var</span> x = <span class="number">0</span>, y = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Point</span> </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> x = <span class="number">0</span>, y = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <ol start="2">
 <li>使用构造函数初始化</li>
 </ol>
-<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Point</span> </span>&#123;</span><br><span class="line">	<span class="keyword">var</span> x, y;</span><br><span class="line">    Point(<span class="keyword">this</span>.x, <span class="keyword">this</span>.y);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Point</span> </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> x, y;</span><br><span class="line">    Point(<span class="keyword">this</span>.x, <span class="keyword">this</span>.y);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <ol start="3">
 <li>通过初始化列表（initializer list）</li>
 </ol>
-<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Point</span> </span>&#123;</span><br><span class="line">	<span class="keyword">var</span> x, y;</span><br><span class="line">    Point(a, b) : x = a, y = b;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Point</span> </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> x, y;</span><br><span class="line">    Point(a, b) : x = a, y = b;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <ol start="4">
 <li>构造函数中初始化</li>
 </ol>
-<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Point</span> </span>&#123;</span><br><span class="line">	<span class="keyword">var</span> x, y;</span><br><span class="line">    Point(a, b) &#123;</span><br><span class="line">  	    x = a;</span><br><span class="line">        y = b;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Point</span> </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> x, y;</span><br><span class="line">    Point(a, b) &#123;</span><br><span class="line">        x = a;</span><br><span class="line">        y = b;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <a id="more"></a>
 
 <p>最后一种方法不适用于 final 实例变量，因为 final 变量没有 setter 方法。且只能初始化一次，所以只能在前三种方式中选择一种。</p>
 <p>那么，什么情况下只能使用初始化列表来进行实例化成员变量呢？</p>
 <p>比如我们有以下一个类，它的两个 final 的成员变量值 sum，factor 都是通过 x，y 计算得来的，所以我们不能使用 this.sum 这样的初始化方式。同时因为 final 字段没有 setter 方法（Dart 中的赋值语句就是 setter 方法的语法糖），所以也不能在构造函数中给这些字段赋值。此时我们就可以通过初始化列表解决如何在代码运行前给实例变量进行初始化的问题。</p>
-<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Point</span> </span>&#123;</span><br><span class="line">	<span class="keyword">final</span> sum, factor;</span><br><span class="line">    Point(x, y) : sum = x + y, factor = x / y;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Point</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> sum, factor;</span><br><span class="line">    Point(x, y) : sum = x + y, factor = x / y;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 
     </div>

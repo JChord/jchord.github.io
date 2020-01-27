@@ -191,7 +191,7 @@
               <span class="post-meta-item-text">Posted on</span>
               
 
-              <time title="Created: 2020-01-27 18:28:21 / Modified: 18:31:19" itemprop="dateCreated datePublished" datetime="2020-01-27T18:28:21+08:00">2020-01-27</time>
+              <time title="Created: 2020-01-27 18:28:21 / Modified: 18:34:26" itemprop="dateCreated datePublished" datetime="2020-01-27T18:28:21+08:00">2020-01-27</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -220,22 +220,22 @@
 <ol>
 <li>在实例变量声明时初始化</li>
 </ol>
-<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Point</span> </span>&#123;</span><br><span class="line">	<span class="keyword">var</span> x = <span class="number">0</span>, y = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Point</span> </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> x = <span class="number">0</span>, y = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <ol start="2">
 <li>使用构造函数初始化</li>
 </ol>
-<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Point</span> </span>&#123;</span><br><span class="line">	<span class="keyword">var</span> x, y;</span><br><span class="line">    Point(<span class="keyword">this</span>.x, <span class="keyword">this</span>.y);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Point</span> </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> x, y;</span><br><span class="line">    Point(<span class="keyword">this</span>.x, <span class="keyword">this</span>.y);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <ol start="3">
 <li>通过初始化列表（initializer list）</li>
 </ol>
-<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Point</span> </span>&#123;</span><br><span class="line">	<span class="keyword">var</span> x, y;</span><br><span class="line">    Point(a, b) : x = a, y = b;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Point</span> </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> x, y;</span><br><span class="line">    Point(a, b) : x = a, y = b;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <ol start="4">
 <li>构造函数中初始化</li>
 </ol>
-<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Point</span> </span>&#123;</span><br><span class="line">	<span class="keyword">var</span> x, y;</span><br><span class="line">    Point(a, b) &#123;</span><br><span class="line">  	    x = a;</span><br><span class="line">        y = b;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Point</span> </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> x, y;</span><br><span class="line">    Point(a, b) &#123;</span><br><span class="line">        x = a;</span><br><span class="line">        y = b;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2020/01/27/when-to-use-initializer-list/#more" rel="contents">
